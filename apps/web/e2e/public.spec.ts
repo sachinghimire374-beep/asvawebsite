@@ -21,14 +21,6 @@ test.describe('Visitor journeys', () => {
     await expect(page.getByRole('navigation', { name: 'Breadcrumb' })).toContainText('Services');
   });
 
-  test('3. opens a published portfolio project', async ({ page }) => {
-    await page.goto('/portfolio');
-    const card = page.locator('a[href^="/portfolio/"]').first();
-    await card.click();
-    await expect(page).toHaveURL(/\/portfolio\/.+/);
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'The challenge' })).toBeVisible();
-  });
 
   test('4. submits the contact form', async ({ page }) => {
     await page.goto('/contact');
@@ -62,7 +54,7 @@ test.describe('Visitor journeys', () => {
     // Seeded base content includes draft-only suggestions; drafts must 404 publicly.
     const res = await request.get('/api/v1/services/this-service-does-not-exist');
     expect(res.status()).toBe(404);
-    const resp = await page.goto('/blog/definitely-not-published-draft');
+    const resp = await page.goto('/definitely-not-published-draft');
     expect(resp?.status()).toBe(404);
     const admin = await request.get('/api/v1/admin/inquiries');
     expect(admin.status()).toBe(401);

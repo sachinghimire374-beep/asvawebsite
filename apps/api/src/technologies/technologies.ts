@@ -15,10 +15,10 @@ export class TechnologiesService extends CrudService {
     model: 'technology',
     entity: 'technology',
     label: 'Technology',
-    tags: ['technologies', 'services', 'projects'],
+    tags: ['technologies', 'services'],
     searchFields: ['name', 'slug'],
     orderBy: [{ category: 'asc' }, { displayOrder: 'asc' }, { name: 'asc' }],
-    include: { logo: { select: MEDIA_SELECT }, _count: { select: { projects: true, services: true } } },
+    include: { logo: { select: MEDIA_SELECT }, _count: { select: { services: true } } },
   };
 
   constructor(prisma: PrismaService, audit: AuditService, revalidation: RevalidationService, private readonly mediaUrl: MediaUrlService) {

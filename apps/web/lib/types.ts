@@ -57,58 +57,6 @@ export interface Service {
   related?: Pick<Service, 'id' | 'name' | 'slug' | 'shortDescription' | 'icon'>[];
 }
 
-export interface ProjectCard {
-  id: string;
-  title: string;
-  slug: string;
-  summary: string;
-  isFeatured: boolean;
-  isSample: boolean;
-  completedAt: string | null;
-  featuredImage: Media | null;
-  category: { id: string; name: string; slug: string } | null;
-  technologies: { id: string; name: string; slug: string }[];
-}
-
-export interface Project extends ProjectCard {
-  caseStudy: string;
-  clientName: string | null;
-  objectives: string | null;
-  challenges: string | null;
-  solution: string | null;
-  results: string | null;
-  projectUrl: string | null;
-  gallery: { id: string; caption: string | null; media: Media | null }[];
-  seoTitle: string | null;
-  seoDescription: string | null;
-  publishedAt: string | null;
-  updatedAt: string;
-  related: ProjectCard[];
-}
-
-export interface PostCard {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  publishedAt: string;
-  readingTimeMinutes: number;
-  isFeatured: boolean;
-  featuredImage: Media | null;
-  category: { id: string; name: string; slug: string } | null;
-  author: { id: string; name: string; slug: string } | null;
-}
-
-export interface Post extends Omit<PostCard, 'author'> {
-  content: string;
-  seoTitle: string | null;
-  seoDescription: string | null;
-  updatedAt: string;
-  author: { id: string; name: string; slug: string; title: string | null; bio: string | null; avatar: Media | null } | null;
-  tags: { id: string; name: string; slug: string }[];
-  related: PostCard[];
-}
-
 export interface CmsPage {
   id: string;
   title: string;

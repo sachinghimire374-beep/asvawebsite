@@ -1,7 +1,7 @@
 import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { SchedulerService } from '../src/blog/scheduler.service.js';
+import { SchedulerService } from '../src/scheduler/scheduler.service.js';
 import type { PrismaService } from '../src/prisma/prisma.service.js';
 import { bootstrap, createUser, login, type Session } from './helpers.js';
 
@@ -72,31 +72,31 @@ describe('Content management and publication', () => {
     expect(res.body.error.code).toBe('CONFLICT');
   });
 
-  it('schedules blog posts and publishes them from the server-side scheduler', async () => {
+  it('schedules pages and publishes them from the server-side scheduler', async () => {
     const future = new Date(Date.now() + 60 * 60_000).toISOString();
-    const post = await editor
-      .post('/api/v1/admin/blog')
-      .send({ title: 'Scheduled article', slug: 'scheduled-article', content: '<p>Soon</p>', status: 'PUBLISHED', publishedAt: future })
+    const page = await editor
+      .post('/api/v1/admin/pages')
+      .send({ title: 'Scheduled page', slug: 'scheduled-page', content: '<p>Soon</p>', status: 'PUBLISHED', publishedAt: future })
       .expect(201);
-    expect(post.body.data.status).toBe('SCHEDULED');
-    await api().get('/api/v1/blog/scheduled-article').expect(404);
+    expect(page.body.data.status).toBe('SCHEDULED');
+    await api().get('/api/v1/pages/scheduled-page').expect(404);
 
     // Move the publication time into the past and run the scheduler job directly.
-    await prisma.blogPost.update({ where: { id: post.body.data.id }, data: { publishedAt: new Date(Date.now() - 1000) } });
+    await prisma.page.update({ where: { id: page.body.data.id }, data: { publishedAt: new Date(Date.now() - 1000) } });
     const published = await app.get(SchedulerService).publishDue();
     expect(published).toBeGreaterThanOrEqual(1);
-    expect((await prisma.blogPost.findUniqueOrThrow({ where: { id: post.body.data.id } })).status).toBe('PUBLISHED');
-    await api().get('/api/v1/blog/scheduled-article').expect(200);
+    expect((await prisma.page.findUniqueOrThrow({ where: { id: page.body.data.id } })).status).toBe('PUBLISHED');
+    await api().get('/api/v1/pages/scheduled-page').expect(200);
   });
 
   it('keeps revision history and restores a previous version', async () => {
-    const created = await editor.post('/api/v1/admin/blog').send({ title: 'Revisions', slug: 'revisions-post', content: '<p>Version one</p>' }).expect(201);
+    const created = await editor.post('/api/v1/admin/pages').send({ title: 'Revisions', slug: 'revisions-page', content: '<p>Version one</p>' }).expect(201);
     const id = created.body.data.id;
-    await editor.patch(`/api/v1/admin/blog/${id}`).send({ title: 'Revisions', slug: 'revisions-post', content: '<p>Version two</p>' }).expect(200);
-    const detail = await editor.agent.get(`/api/v1/admin/blog/${id}`).expect(200);
+    await editor.patch(`/api/v1/admin/pages/${id}`).send({ title: 'Revisions', slug: 'revisions-page', content: '<p>Version two</p>' }).expect(200);
+    const detail = await editor.agent.get(`/api/v1/admin/pages/${id}`).expect(200);
     expect(detail.body.data.revisions).toHaveLength(2);
     const first = detail.body.data.revisions.at(-1);
-    const restored = await editor.post(`/api/v1/admin/blog/${id}/revisions/${first.id}/restore`).expect(201);
+    const restored = await editor.post(`/api/v1/admin/pages/${id}/revisions/${first.id}/restore`).expect(201);
     expect(restored.body.data.content).toContain('Version one');
   });
 

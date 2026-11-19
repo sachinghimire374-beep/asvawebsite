@@ -1,5 +1,4 @@
 import 'server-only';
-import type { Paged } from '../types';
 
 const API_URL = (process.env.API_INTERNAL_URL ?? 'http://localhost:4000').replace(/\/$/, '');
 const REVALIDATE = Number(process.env.REVALIDATE_SECONDS ?? 300);
@@ -9,9 +8,7 @@ export type CacheTag =
   | 'navigation'
   | 'pages'
   | 'services'
-  | 'projects'
   | 'technologies'
-  | 'blog'
   | 'testimonials'
   | 'faqs'
   | 'team'
@@ -52,8 +49,3 @@ export async function apiGet<T>(path: string, options: Options): Promise<T | nul
   return body.data;
 }
 
-export async function apiGetPaged<T>(path: string, options: Options): Promise<Paged<T>> {
-  const res = await request(path, options);
-  if (!res) return { data: [], meta: { page: 1, pageSize: 0, total: 0, totalPages: 1 } };
-  return (await res.json()) as Paged<T>;
-}

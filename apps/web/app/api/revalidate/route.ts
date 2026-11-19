@@ -2,7 +2,7 @@ import { timingSafeEqual } from 'node:crypto';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const ALLOWED_TAGS = new Set(['settings', 'navigation', 'pages', 'services', 'projects', 'technologies', 'blog', 'testimonials', 'faqs', 'team', 'jobs', 'redirects']);
+const ALLOWED_TAGS = new Set(['settings', 'navigation', 'pages', 'services', 'technologies', 'testimonials', 'faqs', 'team', 'jobs', 'redirects']);
 
 function secretMatches(provided: string | null): boolean {
   const expected = process.env.REVALIDATE_SECRET;

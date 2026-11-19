@@ -84,10 +84,10 @@ describe('Authentication', () => {
   it('requires a CSRF token for cookie-authenticated writes and checks the Origin', async () => {
     const user = await createUser(prisma, ['EDITOR']);
     const s = await login(app, user.email);
-    const noToken = await s.agent.post('/api/v1/admin/blog-tags').send({ name: 'X', slug: 'x-csrf' }).expect(403);
+    const noToken = await s.agent.post('/api/v1/admin/faq-categories').send({ name: 'X', slug: 'x-csrf' }).expect(403);
     expect(noToken.body.error.code).toBe('CSRF_FAILED');
-    await s.agent.post('/api/v1/admin/blog-tags').set('Origin', 'https://evil.example').set('x-csrf-token', s.csrf).send({ name: 'X', slug: 'x-csrf' }).expect(403);
-    await s.post('/api/v1/admin/blog-tags').send({ name: 'CSRF ok', slug: 'csrf-ok' }).expect(201);
+    await s.agent.post('/api/v1/admin/faq-categories').set('Origin', 'https://evil.example').set('x-csrf-token', s.csrf).send({ name: 'X', slug: 'x-csrf' }).expect(403);
+    await s.post('/api/v1/admin/faq-categories').send({ name: 'CSRF ok', slug: 'csrf-ok' }).expect(201);
   });
 
   it('completes a password reset with a single-use token from the email', async () => {

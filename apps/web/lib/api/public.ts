@@ -7,17 +7,13 @@ import type {
   Job,
   JobSummary,
   Navigation,
-  Post,
-  PostCard,
-  Project,
-  ProjectCard,
   PublicSettings,
   Service,
   TeamMember,
   TechnologyRef,
   Testimonial,
 } from '../types';
-import { apiGet, apiGetPaged } from './server';
+import { apiGet } from './server';
 
 const FALLBACK_SETTINGS: PublicSettings = {
   ...(({ notifications: _n, ...rest }) => rest)(DEFAULT_SETTINGS),
@@ -38,18 +34,6 @@ export const getService = (slug: string) => apiGet<Service>(`/services/${encodeU
 
 export const getTechnologies = cache(async () => (await apiGet<TechnologyRef[]>('/technologies', { tags: ['technologies'] })) ?? []);
 
-export const getProjects = (query: { page?: number; pageSize?: number; q?: string; category?: string; technology?: string; featured?: 'true' }) =>
-  apiGetPaged<ProjectCard>('/projects', { tags: ['projects'], query });
-export const getProject = (slug: string) => apiGet<Project>(`/projects/${encodeURIComponent(slug)}`, { tags: ['projects'] });
-export const getProjectCategories = () => apiGet<{ id: string; name: string; slug: string }[]>('/project-categories', { tags: ['projects'] }).then((r) => r ?? []);
-
-export const getPosts = (query: { page?: number; pageSize?: number; q?: string; category?: string; tag?: string; author?: string; featured?: 'true' }) =>
-  apiGetPaged<PostCard>('/blog', { tags: ['blog'], query });
-export const getPost = (slug: string) => apiGet<Post>(`/blog/${encodeURIComponent(slug)}`, { tags: ['blog'] });
-export const getBlogTaxonomies = cache(async () =>
-  (await apiGet<{ categories: { id: string; name: string; slug: string; description: string | null }[]; tags: { id: string; name: string; slug: string }[] }>('/blog/taxonomies', { tags: ['blog'] })) ?? { categories: [], tags: [] },
-);
-
 export const getPage = (slug: string) => apiGet<CmsPage>(`/pages/${encodeURIComponent(slug)}`, { tags: ['pages'] });
 export const getTestimonials = cache(async () => (await apiGet<Testimonial[]>('/testimonials', { tags: ['testimonials'] })) ?? []);
 export const getFaqs = cache(async () => (await apiGet<FaqGroup[]>('/faqs', { tags: ['faqs'] })) ?? []);
@@ -57,7 +41,7 @@ export const getTeam = cache(async () => (await apiGet<TeamMember[]>('/team', { 
 export const getJobs = cache(async () => (await apiGet<JobSummary[]>('/jobs', { tags: ['jobs'] })) ?? []);
 export const getJob = (slug: string) => apiGet<Job>(`/jobs/${encodeURIComponent(slug)}`, { tags: ['jobs'] });
 
-export const getSitemapEntries = () => apiGet<{ entries: { path: string; updatedAt: string }[] }>('/seo/sitemap', { tags: ['pages', 'services', 'projects', 'blog', 'jobs'] });
+export const getSitemapEntries = () => apiGet<{ entries: { path: string; updatedAt: string }[] }>('/seo/sitemap', { tags: ['pages', 'services', 'jobs'] });
 
 /** Looks up a redirect for an unknown path. Not cached: hits are counted. */
 export async function resolveRedirect(path: string): Promise<{ toPath: string; statusCode: number } | null> {

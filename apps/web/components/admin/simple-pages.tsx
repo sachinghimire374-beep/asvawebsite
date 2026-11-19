@@ -3,16 +3,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Tabs } from 'radix-ui';
 import {
-  authorInputSchema,
-  blogCategoryInputSchema,
-  blogTagInputSchema,
   faqCategoryInputSchema,
   faqInputSchema,
   LABELS,
   NAVIGATION_MENU_KEYS,
   navigationItemInputSchema,
   PERMISSIONS,
-  projectCategoryInputSchema,
   redirectInputSchema,
   TECHNOLOGY_CATEGORIES,
   technologyInputSchema,
@@ -48,7 +44,7 @@ export function TechnologiesPage() {
         { key: 'name', header: 'Name', cell: (r) => <span className="font-medium">{r.name}</span> },
         { key: 'category', header: 'Category', cell: (r) => LABELS.technologyCategory[r.category as keyof typeof LABELS.technologyCategory] },
         { key: 'visible', header: 'Website', cell: (r) => yesNo(r.isVisible) },
-        { key: 'usage', header: 'Used in', hideOnMobile: true, cell: (r) => <span className="text-muted-foreground">{r._count?.services ?? 0} services · {r._count?.projects ?? 0} projects</span> },
+        { key: 'usage', header: 'Used in', hideOnMobile: true, cell: (r) => <span className="text-muted-foreground">{r._count?.services ?? 0} services</span> },
       ]}
       fields={[
         { type: 'text', name: 'name', label: 'Name', required: true },
@@ -219,47 +215,10 @@ export function RedirectsPage() {
   );
 }
 
-/** One screen for every taxonomy: blog categories, tags, authors, project and FAQ categories. */
+/** One screen for every taxonomy. */
 export function TaxonomiesPage() {
   const { can } = useAuth();
   const tabs = [
-    can(PERMISSIONS.BLOG_MANAGE) && {
-      value: 'blog-categories',
-      label: 'Blog categories',
-      el: (
-        <DialogCrud<any> embedded title="" singular="Category" permission={PERMISSIONS.BLOG_MANAGE} endpoint="/admin/blog-categories" labelOf={(r) => r.name} schema={blogCategoryInputSchema} defaults={{ name: '', slug: '', description: '' }} toForm={(r) => ({ ...r, description: r.description ?? '' })}
-          columns={[{ key: 'n', header: 'Name', cell: (r) => <span className="font-medium">{r.name}</span> }, { key: 's', header: 'Slug', cell: (r) => <code className="text-xs">{r.slug}</code> }, { key: 'c', header: 'Posts', cell: (r) => r._count?.posts ?? 0 }]}
-          fields={[{ type: 'text', name: 'name', label: 'Name', required: true }, { type: 'slug', name: 'slug', label: 'Slug', from: 'name', prefix: '/blog/category/' }, { type: 'textarea', name: 'description', label: 'Description', rows: 2 }]} />
-      ),
-    },
-    can(PERMISSIONS.BLOG_MANAGE) && {
-      value: 'blog-tags',
-      label: 'Blog tags',
-      el: (
-        <DialogCrud<any> embedded title="" singular="Tag" permission={PERMISSIONS.BLOG_MANAGE} endpoint="/admin/blog-tags" labelOf={(r) => r.name} schema={blogTagInputSchema} defaults={{ name: '', slug: '' }}
-          columns={[{ key: 'n', header: 'Name', cell: (r) => <span className="font-medium">{r.name}</span> }, { key: 's', header: 'Slug', cell: (r) => <code className="text-xs">{r.slug}</code> }, { key: 'c', header: 'Posts', cell: (r) => r._count?.posts ?? 0 }]}
-          fields={[{ type: 'text', name: 'name', label: 'Name', required: true }, { type: 'slug', name: 'slug', label: 'Slug', from: 'name' }]} />
-      ),
-    },
-    can(PERMISSIONS.BLOG_MANAGE) && {
-      value: 'authors',
-      label: 'Authors',
-      el: (
-        <DialogCrud<any> embedded title="" singular="Author" permission={PERMISSIONS.BLOG_MANAGE} endpoint="/admin/authors" labelOf={(r) => r.name} schema={authorInputSchema} defaults={{ name: '', slug: '', title: '', bio: '', avatarId: null, adminUserId: null }}
-          toForm={(r) => ({ ...r, avatarId: r.avatar?.id ?? null, adminUserId: r.adminUser?.id ?? null, ...nullable(r, ['title', 'bio']) })}
-          columns={[{ key: 'n', header: 'Name', cell: (r) => <span className="font-medium">{r.name}</span> }, { key: 't', header: 'Title', cell: (r) => r.title ?? '—' }, { key: 'c', header: 'Posts', cell: (r) => r._count?.posts ?? 0 }]}
-          fields={[{ type: 'text', name: 'name', label: 'Name', required: true }, { type: 'slug', name: 'slug', label: 'Slug', from: 'name' }, { type: 'text', name: 'title', label: 'Job title' }, { type: 'textarea', name: 'bio', label: 'Bio', rows: 3 }, { type: 'media', name: 'avatarId', label: 'Avatar' }]} />
-      ),
-    },
-    can(PERMISSIONS.PROJECTS_MANAGE) && {
-      value: 'project-categories',
-      label: 'Project categories',
-      el: (
-        <DialogCrud<any> embedded title="" singular="Category" permission={PERMISSIONS.PROJECTS_MANAGE} endpoint="/admin/project-categories" reorderable labelOf={(r) => r.name} schema={projectCategoryInputSchema} defaults={{ name: '', slug: '', description: '', displayOrder: 0 }} toForm={(r) => ({ ...r, description: r.description ?? '' })}
-          columns={[{ key: 'n', header: 'Name', cell: (r) => <span className="font-medium">{r.name}</span> }, { key: 'c', header: 'Projects', cell: (r) => r._count?.projects ?? 0 }]}
-          fields={[{ type: 'text', name: 'name', label: 'Name', required: true }, { type: 'slug', name: 'slug', label: 'Slug', from: 'name' }, { type: 'textarea', name: 'description', label: 'Description', rows: 2 }, { type: 'number', name: 'displayOrder', label: 'Display order' }]} />
-      ),
-    },
     can(PERMISSIONS.FAQS_MANAGE) && {
       value: 'faq-categories',
       label: 'FAQ categories',
@@ -273,7 +232,7 @@ export function TaxonomiesPage() {
 
   return (
     <>
-      <PageHeader title="Categories & tags" description="Organise blog posts, projects and FAQs." />
+      <PageHeader title="Categories" description="Organise FAQ categories." />
       <Tabs.Root defaultValue={tabs[0]?.value}>
         <Tabs.List className="mb-5 flex flex-wrap gap-1 border-b" aria-label="Taxonomies">
           {tabs.map((t) => (

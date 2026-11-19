@@ -63,51 +63,6 @@ export function ServicesList() {
   );
 }
 
-export function ProjectsList() {
-  return (
-    <ResourceList<any>
-      title="Projects"
-      description="Portfolio case studies. Featured projects appear on the homepage."
-      permission={PERMISSIONS.PROJECTS_MANAGE}
-      endpoint="/admin/projects"
-      createHref="/admin/projects/new"
-      createLabel="New project"
-      rowHref={(r) => `/admin/projects/${r.id}`}
-      filters={[statusFilter]}
-      canDelete={(r) => r.status !== 'PUBLISHED'}
-      deleteLabel={(r) => r.title}
-      columns={[
-        { key: 'title', header: 'Title', cell: (r) => (<div><p className="font-medium">{r.title}</p><p className="text-xs text-muted-foreground">{r.category?.name ?? 'Uncategorised'}</p></div>) },
-        { key: 'status', header: 'Status', cell: publishedCell },
-        { key: 'flags', header: '', hideOnMobile: true, cell: (r) => (<div className="flex gap-1">{r.isFeatured && <Badge variant="info">Featured</Badge>}{r.isSample && <Badge variant="warning">Sample</Badge>}</div>) },
-        { key: 'updated', header: 'Updated', hideOnMobile: true, cell: (r) => <span className="text-muted-foreground">{formatDateTime(r.updatedAt)}</span> },
-      ]}
-    />
-  );
-}
-
-export function BlogList() {
-  return (
-    <ResourceList<any>
-      title="Blog posts"
-      description="Draft, schedule and publish articles. Scheduled posts go live automatically."
-      permission={PERMISSIONS.BLOG_MANAGE}
-      endpoint="/admin/blog"
-      createHref="/admin/blog/new"
-      createLabel="New post"
-      rowHref={(r) => `/admin/blog/${r.id}`}
-      filters={[statusFilter]}
-      canDelete={(r) => r.status !== 'PUBLISHED'}
-      deleteLabel={(r) => r.title}
-      columns={[
-        { key: 'title', header: 'Title', cell: (r) => (<div><p className="font-medium">{r.title}</p><p className="text-xs text-muted-foreground">{[r.category?.name, r.author?.name].filter(Boolean).join(' · ') || '—'}</p></div>) },
-        { key: 'status', header: 'Status', cell: publishedCell },
-        { key: 'featured', header: '', hideOnMobile: true, cell: (r) => r.isFeatured && <Badge variant="info">Featured</Badge> },
-        { key: 'updated', header: 'Updated', hideOnMobile: true, cell: (r) => <span className="text-muted-foreground">{formatDateTime(r.updatedAt)}</span> },
-      ]}
-    />
-  );
-}
 
 export function JobsList() {
   return (

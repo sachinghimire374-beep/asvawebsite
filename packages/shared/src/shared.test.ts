@@ -7,7 +7,6 @@ import {
   csvCell,
   DEFAULT_ROLES,
   DEFAULT_SETTINGS,
-  estimateReadingTime,
   hasPermission,
   isPubliclyVisible,
   isReservedSlug,
@@ -27,7 +26,7 @@ describe('slugify', () => {
   });
   it('flags reserved slugs', () => {
     expect(isReservedSlug('admin')).toBe(true);
-    expect(isReservedSlug('Blog')).toBe(true);
+    expect(isReservedSlug('Services')).toBe(true);
     expect(isReservedSlug('privacy-policy')).toBe(false);
   });
 });
@@ -47,7 +46,7 @@ describe('isSafeHref', () => {
 describe('permissions', () => {
   it('gives administrators every permission and restricts other roles', () => {
     expect(hasPermission(DEFAULT_ROLES.ADMINISTRATOR.permissions, ['settings.manage', 'users.manage'])).toBe(true);
-    expect(hasPermission(DEFAULT_ROLES.EDITOR.permissions, 'blog.manage')).toBe(true);
+    expect(hasPermission(DEFAULT_ROLES.EDITOR.permissions, 'pages.manage')).toBe(true);
     expect(hasPermission(DEFAULT_ROLES.EDITOR.permissions, 'inquiries.read')).toBe(false);
     expect(hasPermission(DEFAULT_ROLES.SALES_MANAGER.permissions, 'inquiries.export')).toBe(true);
     expect(hasPermission(DEFAULT_ROLES.SALES_MANAGER.permissions, 'applications.read')).toBe(false);
@@ -135,10 +134,6 @@ describe('validation', () => {
 });
 
 describe('utilities', () => {
-  it('estimates reading time from HTML', () => {
-    expect(estimateReadingTime('<p>hello</p>')).toBe(1);
-    expect(estimateReadingTime(`<p>${'word '.repeat(1100)}</p>`)).toBe(5);
-  });
   it('neutralises CSV formula injection', () => {
     expect(csvCell('=HYPERLINK("x")')).toBe(`"'=HYPERLINK(""x"")"`);
     expect(csvCell('a,b')).toBe('"a,b"');

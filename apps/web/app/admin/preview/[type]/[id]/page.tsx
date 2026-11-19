@@ -9,13 +9,11 @@ import { AuthGate } from '@/components/admin/auth';
 import { StatusBadge } from '@/components/admin/ui';
 import { Alert, Skeleton } from '@/components/ui/primitives';
 import { api, ApiError } from '@/lib/api/client';
-import { formatDate, formatDateTime } from '@/lib/utils';
+import { formatDateTime } from '@/lib/utils';
 
 const ENDPOINTS: Record<string, { endpoint: string; editHref: string; label: string }> = {
   page: { endpoint: '/admin/pages', editHref: '/admin/pages', label: 'Page' },
-  blog: { endpoint: '/admin/blog', editHref: '/admin/blog', label: 'Blog post' },
   service: { endpoint: '/admin/services', editHref: '/admin/services', label: 'Service' },
-  project: { endpoint: '/admin/projects', editHref: '/admin/projects', label: 'Project' },
 };
 
 function Preview({ type, id }: { type: string; id: string }) {
@@ -28,8 +26,7 @@ function Preview({ type, id }: { type: string; id: string }) {
   const title = data.title ?? data.name;
   const lead = data.excerpt ?? data.summary ?? data.shortDescription;
   const image = data.featuredImage ?? data.coverImage;
-  const html = data.content ?? data.description ?? data.caseStudy ?? '';
-  const story = type === 'project' ? [['Objectives', data.objectives], ['The challenge', data.challenges], ['Our solution', data.solution], ['Results', data.results]].filter(([, v]) => v) : [];
+  const html = data.content ?? data.description ?? '';
 
   return (
     <>
@@ -48,12 +45,7 @@ function Preview({ type, id }: { type: string; id: string }) {
           {data.category?.name && <p className="type-label">{data.category.name}</p>}
           <h1 className="type-page mt-3 text-ink">{title}</h1>
           {lead && <p className="type-lead mt-5 text-muted-ink">{lead}</p>}
-          {type === 'blog' && (
-            <p className="mt-6 text-sm text-muted-ink">
-              {data.author?.name ? `${data.author.name} · ` : ''}
-              {data.publishedAt ? formatDate(data.publishedAt) : 'Not yet published'}
-            </p>
-          )}
+
         </div>
       </header>
       <main className="bg-white py-14">
@@ -62,12 +54,7 @@ function Preview({ type, id }: { type: string; id: string }) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={image.url} alt={image.alt ?? ''} className="w-full rounded-2xl border object-cover" />
           )}
-          {story.map(([heading, body]) => (
-            <section key={heading}>
-              <h2 className="text-2xl font-semibold">{heading}</h2>
-              <p className="mt-3 whitespace-pre-line text-lg leading-relaxed text-slate-700">{body}</p>
-            </section>
-          ))}
+
           {data.features?.length > 0 && (
             <ul className="space-y-2">
               {data.features.map((f: string) => (

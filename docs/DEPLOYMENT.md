@@ -18,6 +18,8 @@
 | Media | Cloudflare R2, AWS S3, DigitalOcean Spaces, Backblaze B2 |
 | Email | Amazon SES, Postmark, Mailgun, Brevo, or your domain's SMTP |
 
+For a step-by-step Vercel setup of the web app, see [DEPLOYMENT-VERCEL.md](./DEPLOYMENT-VERCEL.md).
+
 The browser only ever talks to the web origin; the web server proxies `/api/v1/*` to `API_INTERNAL_URL`. The API therefore does not need to be publicly reachable if both run on the same private network (it only needs to accept requests from the web server).
 
 ## Environments

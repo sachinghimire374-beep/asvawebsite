@@ -5,7 +5,7 @@ import { absoluteUrl } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
-const STATIC_ROUTES = ['/', '/about', '/services', '/courses', '/technologies', '/portfolio', '/blog', '/careers', '/contact', '/start-a-project', '/faq'];
+const STATIC_ROUTES = ['/', '/about', '/services', '/courses', '/technologies', '/careers', '/contact', '/start-a-project', '/faq'];
 
 /** Built from published database records only — no drafts, admin routes or private data. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

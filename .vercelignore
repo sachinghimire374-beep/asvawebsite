@@ -1,0 +1,12 @@
+# Nothing secret or heavy should reach the build.
+.env
+.env.*
+!.env.example
+infra
+docker-compose.yml
+docs
+apps/api/storage
+apps/web/e2e
+apps/web/test
+apps/web/playwright.config.ts
+**/*.tsbuildinfo

@@ -10,12 +10,12 @@ test.describe('Administrator journeys', () => {
     await expect(page.getByRole('link', { name: 'Global settings' })).toBeVisible();
   });
 
-  test('7. an editor creates and publishes a blog post that appears on the website', async ({ page }) => {
+  test('7. an editor creates and publishes a page that appears on the website', async ({ page }) => {
     const title = `E2E article ${unique()}`;
     await loginAs(page, 'editor');
     // Role-aware navigation: editors do not see leads or settings.
     await expect(page.getByRole('link', { name: 'Project inquiries' })).toHaveCount(0);
-    await page.goto('/admin/blog/new');
+    await page.goto('/admin/pages/new');
     await page.locator('#f-title').fill(title);
     await expect(page.getByLabel('URL slug')).toHaveValue(/e2e-article-/);
     const slug = await page.getByLabel('URL slug').inputValue();
@@ -23,10 +23,10 @@ test.describe('Administrator journeys', () => {
     await page.keyboard.type('This article was written by the end-to-end test suite.');
     await page.getByLabel('Status').selectOption('PUBLISHED');
     await page.getByRole('button', { name: 'Save' }).click();
-    await expect(page.getByText('Post saved')).toBeVisible();
-    await expect(page).toHaveURL(/\/admin\/blog\/[0-9a-f-]{36}$/);
+    await expect(page.getByText('Page saved')).toBeVisible();
+    await expect(page).toHaveURL(/\/admin\/pages\/[0-9a-f-]{36}$/);
 
-    await page.goto(`/blog/${slug}`);
+    await page.goto(`/${slug}`);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
     await expect(page.getByText('written by the end-to-end test suite')).toBeVisible();
 
@@ -34,8 +34,8 @@ test.describe('Administrator journeys', () => {
     await page.goBack();
     await page.getByLabel('Status').selectOption('DRAFT');
     await page.getByRole('button', { name: 'Save' }).click();
-    await expect(page.getByText('Post saved')).toBeVisible();
-    const gone = await page.goto(`/blog/${slug}`);
+    await expect(page.getByText('Page saved')).toBeVisible();
+    const gone = await page.goto(`/${slug}`);
     expect(gone?.status()).toBe(404);
   });
 
@@ -111,14 +111,14 @@ test.describe('Administrator journeys', () => {
   test('12b. drafts created in the CMS are not publicly visible', async ({ page, context }) => {
     await loginAs(page, 'editor');
     const slug = `e2e-draft-${unique()}`;
-    const created = await adminApi(context, page.request, 'POST', '/admin/blog', { title: 'Hidden draft', slug, content: '<p>secret</p>', status: 'DRAFT' });
+    const created = await adminApi(context, page.request, 'POST', '/admin/pages', { title: 'Hidden draft', slug, content: '<p>secret</p>', status: 'DRAFT' });
     expect(created.status()).toBe(201);
     const id = (await created.json()).data.id;
     const anon = await page.context().browser()!.newContext();
-    const res = await anon.request.get(new URL(`/blog/${slug}`, page.url()).toString());
+    const res = await anon.request.get(new URL(`/${slug}`, page.url()).toString());
     expect(res.status()).toBe(404);
-    expect((await anon.request.get(new URL(`/api/v1/blog/${slug}`, page.url()).toString())).status()).toBe(404);
+    expect((await anon.request.get(new URL(`/api/v1/pages/${slug}`, page.url()).toString())).status()).toBe(404);
     await anon.close();
-    await adminApi(context, page.request, 'DELETE', `/admin/blog/${id}`);
+    await adminApi(context, page.request, 'DELETE', `/admin/pages/${id}`);
   });
 });

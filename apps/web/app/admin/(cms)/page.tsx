@@ -2,7 +2,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery } from '@tanstack/react-query';
-import { ArrowDownRight, ArrowUpRight, Briefcase, FileText, FolderKanban, Inbox, Mail, MailCheck, Newspaper, Wrench } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Briefcase, FileText, Inbox, Mail, MailCheck, Wrench } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { LABELS, LEAD_STATUSES } from '@asva/shared';
@@ -15,7 +15,7 @@ import { formatDate, relativeTime } from '@/lib/utils';
 interface Overview {
   days: number;
   generatedAt: string;
-  content: { services: number; projects: number; posts: number; scheduledPosts: number; draftPosts: number } | null;
+  content: { services: number; pages: number; scheduledPages: number; draftPages: number } | null;
   leads: { new: number; period: number; previousPeriod: number; byStatus: Record<string, number>; recent: any[]; daily: { day: string; count: number }[] } | null;
   contact: { unread: number; period: number; previousPeriod: number } | null;
   careers: { openJobs: number; newApplications: number; period: number; recent: any[] } | null;
@@ -96,8 +96,7 @@ export default function DashboardPage() {
             {data.content && (
               <>
                 <StatCard label="Published services" value={data.content.services} icon={Wrench} href="/admin/services" />
-                <StatCard label="Published projects" value={data.content.projects} icon={FolderKanban} href="/admin/projects" />
-                <StatCard label="Published posts" value={data.content.posts} icon={Newspaper} href="/admin/blog" hint={`${data.content.scheduledPosts} scheduled · ${data.content.draftPosts} drafts`} />
+                <StatCard label="Published pages" value={data.content.pages} icon={FileText} href="/admin/pages" hint={`${data.content.scheduledPages} scheduled · ${data.content.draftPages} drafts`} />
               </>
             )}
           </div>

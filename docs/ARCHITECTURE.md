@@ -37,10 +37,10 @@ Browser ──► Next.js (apps/web)  ──rewrite /api/v1/* ──► NestJS A
 NestJS (ESM), REST under `/api/v1`, Swagger at `/api/docs` (disabled in production unless
 `SWAGGER_ENABLED=true`).
 
-Modules: `auth`, `users`, `roles`, `audit`, `pages`, `services`, `projects`, `technologies`,
-`blog`, `media`, `testimonials`, `faqs`, `team`, `inquiries`, `contact`, `careers`,
+Modules: `auth`, `users`, `roles`, `audit`, `pages`, `services`, `technologies`,
+`media`, `testimonials`, `faqs`, `team`, `inquiries`, `contact`, `careers`,
 `newsletter`, `navigation`, `settings`, `redirects`, `dashboard`, `email`, `seo`, `health`,
-`retention`, `revalidation`, `common`, `prisma`, `config`.
+`retention`, `revalidation`, `scheduler`, `common`, `prisma`, `config`.
 
 Cross-cutting:
 
@@ -111,7 +111,7 @@ not. Submissions are stored independently of email delivery.
 `@nestjs/schedule` cron jobs, each guarded by a PostgreSQL advisory lock so that multiple API
 instances never run the same job twice:
 
-* publish scheduled blog posts and pages (every minute)
+* publish scheduled pages and services (every minute)
 * email outbox delivery (every 30 s)
 * data retention purge (daily)
 * expired session/token cleanup (hourly)

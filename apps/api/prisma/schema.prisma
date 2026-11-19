@@ -151,13 +151,11 @@ model AdminUser {
   roles               UserRole[]
   sessions            Session[]
   tokens              AuthToken[]
-  author              Author?
   assignedInquiries   ProjectInquiry[]     @relation("InquiryAssignee")
   inquiryNotes        InquiryNote[]
   inquiryActivities   InquiryActivity[]
   auditLogs           AuditLog[]
   pageRevisions       PageRevision[]
-  postRevisions       BlogPostRevision[]
   uploadedMedia       MediaAsset[]
   approvedTestimonials Testimonial[]
 
@@ -281,11 +279,7 @@ model MediaAsset {
 
   pagesFeatured        Page[]
   servicesCover        Service[]
-  projectsFeatured     Project[]
-  projectGallery       ProjectImage[]
   technologyLogos      Technology[]
-  postsFeatured        BlogPost[]
-  authorAvatars        Author[]
   testimonialAvatars   Testimonial[]
   teamPhotos           TeamMember[]
   applicationResumes   JobApplication[]
@@ -377,7 +371,6 @@ model Technology {
   updatedAt    DateTime            @updatedAt
   logo         MediaAsset?         @relation(fields: [logoId], references: [id], onDelete: SetNull)
   services     ServiceTechnology[]
-  projects     ProjectTechnology[]
 
   @@index([category, displayOrder])
   @@map("technologies")
@@ -393,185 +386,6 @@ model ServiceTechnology {
   @@id([serviceId, technologyId])
   @@index([technologyId])
   @@map("service_technologies")
-}
-
-// ============================================================ Portfolio
-
-model ProjectCategory {
-  id           String    @id @default(uuid()) @db.Uuid
-  name         String    @unique
-  slug         String    @unique
-  description  String?
-  displayOrder Int       @default(0)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  projects     Project[]
-
-  @@map("project_categories")
-}
-
-model Project {
-  id              String              @id @default(uuid()) @db.Uuid
-  title           String
-  slug            String              @unique
-  summary         String
-  caseStudy       String              @default("")
-  clientName      String?
-  featuredImageId String?             @db.Uuid
-  categoryId      String?             @db.Uuid
-  objectives      String?
-  challenges      String?
-  solution        String?
-  results         String?
-  projectUrl      String?
-  completedAt     DateTime?
-  isFeatured      Boolean             @default(false)
-  /// Demonstration content. Shown with a visible "Sample project" label.
-  isSample        Boolean             @default(false)
-  displayOrder    Int                 @default(0)
-  status          ContentStatus       @default(DRAFT)
-  publishedAt     DateTime?
-  seoTitle        String?
-  seoDescription  String?
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  featuredImage   MediaAsset?         @relation(fields: [featuredImageId], references: [id], onDelete: SetNull)
-  category        ProjectCategory?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  technologies    ProjectTechnology[]
-  gallery         ProjectImage[]
-
-  @@index([status, publishedAt])
-  @@index([isFeatured, status])
-  @@index([categoryId])
-  @@map("projects")
-}
-
-model ProjectTechnology {
-  projectId    String     @db.Uuid
-  technologyId String     @db.Uuid
-  createdAt    DateTime   @default(now())
-  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  technology   Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
-
-  @@id([projectId, technologyId])
-  @@index([technologyId])
-  @@map("project_technologies")
-}
-
-model ProjectImage {
-  id           String     @id @default(uuid()) @db.Uuid
-  projectId    String     @db.Uuid
-  mediaId      String     @db.Uuid
-  caption      String?
-  displayOrder Int        @default(0)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  media        MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
-
-  @@index([projectId, displayOrder])
-  @@map("project_images")
-}
-
-// ============================================================ Blog
-
-model Author {
-  id          String     @id @default(uuid()) @db.Uuid
-  name        String
-  slug        String     @unique
-  title       String?
-  bio         String?
-  avatarId    String?    @db.Uuid
-  adminUserId String?    @unique @db.Uuid
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  avatar      MediaAsset? @relation(fields: [avatarId], references: [id], onDelete: SetNull)
-  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
-  posts       BlogPost[]
-
-  @@map("authors")
-}
-
-model BlogCategory {
-  id          String     @id @default(uuid()) @db.Uuid
-  name        String     @unique
-  slug        String     @unique
-  description String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  posts       BlogPost[]
-
-  @@map("blog_categories")
-}
-
-model BlogTag {
-  id        String        @id @default(uuid()) @db.Uuid
-  name      String        @unique
-  slug      String        @unique
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  posts     BlogPostTag[]
-
-  @@map("blog_tags")
-}
-
-model BlogPost {
-  id                 String             @id @default(uuid()) @db.Uuid
-  title              String
-  slug               String             @unique
-  excerpt            String?
-  content            String             @default("")
-  featuredImageId    String?            @db.Uuid
-  categoryId         String?            @db.Uuid
-  authorId           String?            @db.Uuid
-  isFeatured         Boolean            @default(false)
-  readingTimeMinutes Int                @default(1)
-  status             ContentStatus      @default(DRAFT)
-  /// Publication time; for SCHEDULED posts this is when the scheduler publishes them.
-  publishedAt        DateTime?
-  seoTitle           String?
-  seoDescription     String?
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  featuredImage      MediaAsset?        @relation(fields: [featuredImageId], references: [id], onDelete: SetNull)
-  category           BlogCategory?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  author             Author?            @relation(fields: [authorId], references: [id], onDelete: SetNull)
-  tags               BlogPostTag[]
-  revisions          BlogPostRevision[]
-
-  @@index([status, publishedAt])
-  @@index([categoryId])
-  @@index([authorId])
-  @@map("blog_posts")
-}
-
-model BlogPostTag {
-  postId    String   @db.Uuid
-  tagId     String   @db.Uuid
-  createdAt DateTime @default(now())
-  post      BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  tag       BlogTag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@id([postId, tagId])
-  @@index([tagId])
-  @@map("blog_post_tags")
-}
-
-model BlogPostRevision {
-  id          String     @id @default(uuid()) @db.Uuid
-  postId      String     @db.Uuid
-  title       String
-  excerpt     String?
-  content     String
-  note        String?
-  createdById String?    @db.Uuid
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  post        BlogPost   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  createdBy   AdminUser? @relation(fields: [createdById], references: [id], onDelete: SetNull)
-
-  @@index([postId, createdAt])
-  @@map("blog_post_revisions")
 }
 
 // ============================================================ Social proof & FAQ & team

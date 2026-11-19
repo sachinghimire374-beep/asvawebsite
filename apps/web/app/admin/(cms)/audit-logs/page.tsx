@@ -18,10 +18,8 @@ const ACTION_GROUPS = [
   { value: 'settings.', label: 'Settings' },
   { value: 'inquiry.', label: 'Leads' },
   { value: 'application.', label: 'Applications' },
-  { value: 'blog_post.', label: 'Blog' },
   { value: 'page.', label: 'Pages' },
   { value: 'service.', label: 'Services' },
-  { value: 'project.', label: 'Projects' },
   { value: 'media.', label: 'Media' },
   { value: 'newsletter.', label: 'Newsletter' },
 ];

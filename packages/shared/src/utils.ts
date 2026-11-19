@@ -23,8 +23,6 @@ export const RESERVED_SLUGS = [
   'api',
   'about',
   'services',
-  'portfolio',
-  'blog',
   'careers',
   'contact',
   'start-a-project',
@@ -77,17 +75,6 @@ export function isExternalHref(href: string): boolean {
   return /^https?:\/\//i.test(href.trim());
 }
 
-const WORDS_PER_MINUTE = 220;
-
-/** Reading-time estimate in whole minutes from HTML or plain text (minimum 1). */
-export function estimateReadingTime(content: string): number {
-  const text = content
-    .replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&[a-z#0-9]+;/gi, ' ');
-  const words = text.split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.round(words / WORDS_PER_MINUTE));
-}
 
 /** Plain-text excerpt from HTML, for meta descriptions and cards. */
 export function htmlToPlainText(html: string, maxLength?: number): string {

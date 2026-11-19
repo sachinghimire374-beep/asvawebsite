@@ -5,7 +5,7 @@ import { DEFAULT_SETTINGS, type AuthUser } from '@asva/shared';
 import { Logo } from '@/components/brand/logo';
 import { AuthGate, RequirePermission } from '@/components/admin/auth';
 import { DataTable, StatusBadge } from '@/components/admin/ui';
-import { ProjectCard, ServiceFeature, ServiceRow } from '@/components/site/cards';
+import { ServiceFeature, ServiceRow } from '@/components/site/cards';
 import { MobileNav, NavLink } from '@/components/site/header-client';
 import type { PublicSettings } from '@/lib/types';
 
@@ -45,16 +45,6 @@ describe('Navigation', () => {
 });
 
 describe('Public content rendering', () => {
-  it('labels sample projects so demo content is never mistaken for real work', () => {
-    render(
-      <ProjectCard
-        project={{ id: '1', title: 'Sample: Demo', slug: 'demo', summary: 'Demo summary', isFeatured: true, isSample: true, completedAt: null, featuredImage: null, category: { id: 'c', name: 'Web', slug: 'web' }, technologies: [{ id: 't', name: 'React', slug: 'react' }] }}
-      />,
-    );
-    expect(screen.getByText('Sample', { exact: true })).toBeInTheDocument();
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/portfolio/demo');
-    expect(screen.getByText(/Web.*React/)).toBeInTheDocument();
-  });
 
   it('uses the company custom-software photo on both home feature and services row', () => {
     const customService = {
@@ -115,18 +105,18 @@ describe('Admin UI', () => {
   });
 
   it('hides sections the user lacks permission for', async () => {
-    mockMe({ permissions: ['blog.manage'] });
+    mockMe({ permissions: ['pages.manage'] });
     withQuery(
       <AuthGate>
         <RequirePermission permission="settings.manage">
           <p>Secret settings</p>
         </RequirePermission>
-        <RequirePermission permission="blog.manage">
-          <p>Blog editor</p>
+        <RequirePermission permission="pages.manage">
+          <p>Page editor</p>
         </RequirePermission>
       </AuthGate>,
     );
-    expect(await screen.findByText('Blog editor')).toBeInTheDocument();
+    expect(await screen.findByText('Page editor')).toBeInTheDocument();
     expect(screen.queryByText('Secret settings')).not.toBeInTheDocument();
     expect(screen.getByText(/don’t have access/i)).toBeInTheDocument();
   });

@@ -55,7 +55,7 @@ npm run dev
 DEMO_USER_PASSWORD='Choose-A-Dev-Passw0rd!' npm run db:seed:demo
 ```
 
-Publishes the suggested services, a set of technologies and FAQs, and adds **clearly labelled sample** projects, blog posts and a sample vacancy, plus one demo user per role (`admin@demo.asva.local`, `editor@…`, `sales@…`, `hr@…`). The script refuses to run when `NODE_ENV=production`.
+Publishes the suggested services, a set of technologies and FAQs, and adds a **clearly labelled sample** vacancy, plus one demo user per role (`admin@demo.asva.local`, `editor@…`, `sales@…`, `hr@…`). The script refuses to run when `NODE_ENV=production`.
 
 ---
 
@@ -68,7 +68,7 @@ Publishes the suggested services, a set of technologies and FAQs, and adds **cle
 | Role | Can |
 | --- | --- |
 | Administrator | Everything, including users, roles, global settings and audit logs |
-| Editor | Pages, services, projects, blog, categories/tags, technologies, FAQs, testimonials, team, media, redirects |
+| Editor | Pages, services, categories, technologies, FAQs, testimonials, team, media, redirects |
 | Sales Manager | Project inquiries (status, assignment, notes, CSV export), contact submissions, newsletter export |
 | HR Manager | Job listings, applications, resume downloads |
 
@@ -143,7 +143,7 @@ The site deliberately does **not** invent facts. Before launch, fill in via the 
 - Contact email, phone, address, map, business hours, social profiles (**Settings → Contact / Social**)
 - Which of the 12 suggested services are actually offered (publish them in **Services**)
 - Which technologies the team really uses (**Technologies** — all hidden by default)
-- Real portfolio projects (sample projects exist only in demo data) and genuine, consented testimonials
+- Genuine, consented testimonials
 - Legal review of the Privacy Policy, Terms and Cookie Policy templates (they carry a visible "legal review required" notice)
 - Official logo files, if different from the built-in vector version (**Settings → Branding**)
 - Notification recipients (**Settings → Notifications**)

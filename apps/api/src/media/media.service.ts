@@ -163,14 +163,10 @@ export class MediaService {
 
   /** Where an asset is referenced. Deletion is blocked while anything uses it. */
   async usage(id: string) {
-    const [pages, services, projects, gallery, technologies, posts, authors, testimonials, team, settings] = await Promise.all([
+    const [pages, services, technologies, testimonials, team, settings] = await Promise.all([
       this.prisma.page.findMany({ where: { featuredImageId: id }, select: { id: true, title: true } }),
       this.prisma.service.findMany({ where: { coverImageId: id }, select: { id: true, name: true } }),
-      this.prisma.project.findMany({ where: { featuredImageId: id }, select: { id: true, title: true } }),
-      this.prisma.projectImage.findMany({ where: { mediaId: id }, select: { project: { select: { id: true, title: true } } } }),
       this.prisma.technology.findMany({ where: { logoId: id }, select: { id: true, name: true } }),
-      this.prisma.blogPost.findMany({ where: { OR: [{ featuredImageId: id }, { content: { contains: id } }] }, select: { id: true, title: true } }),
-      this.prisma.author.findMany({ where: { avatarId: id }, select: { id: true, name: true } }),
       this.prisma.testimonial.findMany({ where: { avatarId: id }, select: { id: true, clientName: true } }),
       this.prisma.teamMember.findMany({ where: { photoId: id }, select: { id: true, name: true } }),
       this.prisma.$queryRaw<{ group: string }[]>`SELECT "group" FROM site_settings WHERE value::text LIKE ${'%' + id + '%'}`,
@@ -179,11 +175,7 @@ export class MediaService {
     return [
       ...[...pages, ...inPageContent].map((p) => ({ type: 'Page', id: p.id, label: p.title })),
       ...services.map((s) => ({ type: 'Service', id: s.id, label: s.name })),
-      ...projects.map((p) => ({ type: 'Project', id: p.id, label: p.title })),
-      ...gallery.map((g) => ({ type: 'Project gallery', id: g.project.id, label: g.project.title })),
       ...technologies.map((t) => ({ type: 'Technology', id: t.id, label: t.name })),
-      ...posts.map((p) => ({ type: 'Blog post', id: p.id, label: p.title })),
-      ...authors.map((a) => ({ type: 'Author', id: a.id, label: a.name })),
       ...testimonials.map((t) => ({ type: 'Testimonial', id: t.id, label: t.clientName })),
       ...team.map((t) => ({ type: 'Team member', id: t.id, label: t.name })),
       ...settings.map((s) => ({ type: 'Settings', id: s.group, label: `Settings: ${s.group}` })),

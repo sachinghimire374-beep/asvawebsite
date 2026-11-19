@@ -135,11 +135,6 @@ export const homeSettingsSchema = z.object({
       .max(12)
       .default([]),
   }),
-  projects: z.object({
-    enabled: z.boolean().default(true),
-    heading: requiredText(140, 'Heading'),
-    subheading: optionalText(400),
-  }),
   technologies: z.object({
     enabled: z.boolean().default(true),
     heading: requiredText(140, 'Heading'),
@@ -153,11 +148,6 @@ export const homeSettingsSchema = z.object({
     heading: requiredText(140, 'Heading'),
     body: requiredText(400, 'Body'),
     button: cta,
-  }),
-  insights: z.object({
-    enabled: z.boolean().default(true),
-    heading: requiredText(140, 'Heading'),
-    subheading: optionalText(400),
   }),
 });
 

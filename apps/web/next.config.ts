@@ -7,6 +7,18 @@ import type { NextConfig } from 'next';
 const rootEnv = path.resolve(process.cwd(), '../../.env');
 if (existsSync(rootEnv)) config({ path: rootEnv, quiet: true });
 
+// Managed platforms (Vercel, Render, ...) inject real env vars; a missing API URL would make every
+// public page fail at request time, so fail the production build instead of shipping a broken site.
+const requiredInProduction = ['API_INTERNAL_URL', 'NEXT_PUBLIC_SITE_URL', 'REVALIDATE_SECRET'] as const;
+if (process.env.VERCEL_ENV === 'production' || (process.env.NODE_ENV === 'production' && process.env.VERCEL)) {
+  const missing = requiredInProduction.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(`Missing required environment variables for a production build: ${missing.join(', ')}`);
+  }
+} else if (process.env.VERCEL && !process.env.API_INTERNAL_URL) {
+  console.warn('[next.config] API_INTERNAL_URL is not set: API calls will fall back to http://localhost:4000.');
+}
+
 const apiUrl = (process.env.API_INTERNAL_URL ?? 'http://localhost:4000').replace(/\/$/, '');
 
 /** Optional CDN/object-storage host for media (STORAGE_PUBLIC_URL on the API). */
@@ -23,7 +35,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  output: 'standalone',
+  // Vercel builds its own serverless output; standalone is for Docker/VPS deployments.
+  ...(process.env.VERCEL ? {} : { output: 'standalone' as const }),
   outputFileTracingRoot: path.resolve(process.cwd(), '../..'),
   transpilePackages: ['@asva/shared'],
   images: {

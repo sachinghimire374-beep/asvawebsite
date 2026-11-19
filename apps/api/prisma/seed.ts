@@ -15,7 +15,7 @@ import { randomBytes } from 'node:crypto';
 import { config } from 'dotenv';
 import { PrismaPg } from '@prisma/adapter-pg';
 import argon2 from 'argon2';
-import { DEFAULT_ROLES, DEFAULT_SETTINGS, LABELS, PERMISSION_DESCRIPTIONS, PRIVATE_SETTINGS_GROUPS, ROLE_KEYS, SETTINGS_GROUPS, estimateReadingTime, type PermissionKey } from '@asva/shared';
+import { DEFAULT_ROLES, DEFAULT_SETTINGS, LABELS, PERMISSION_DESCRIPTIONS, PRIVATE_SETTINGS_GROUPS, ROLE_KEYS, SETTINGS_GROUPS, type PermissionKey } from '@asva/shared';
 import { ContentStatus, JobStatus, PrismaClient, type NavigationMenuKey, type Prisma, type TechnologyCategory } from '../src/generated/prisma/client.js';
 import { DEFAULT_NAVIGATION, LEGAL_PAGES, SUGGESTED_FAQS, SUGGESTED_SERVICES, SUGGESTED_TECHNOLOGIES, serviceDescription } from './seed-content.js';
 
@@ -140,103 +140,6 @@ async function seedDemo() {
   await prisma.technology.updateMany({ where: { slug: { in: ['react', 'nextjs', 'typescript', 'tailwind-css', 'nodejs', 'nestjs', 'flutter', 'react-native', 'postgresql', 'redis', 'docker', 'aws', 'github-actions', 'figma', 'playwright', 'python'] } }, data: { isVisible: true } });
   await prisma.faq.updateMany({ data: { isPublished: true } });
   log('demo: published suggested services, FAQs and a set of technologies');
-
-  const categories = await Promise.all(
-    [
-      { name: 'Web Platforms', slug: 'web-platforms' },
-      { name: 'Mobile Apps', slug: 'mobile-apps' },
-      { name: 'Enterprise Systems', slug: 'enterprise-systems' },
-    ].map((c, i) => prisma.projectCategory.upsert({ where: { slug: c.slug }, create: { ...c, displayOrder: i }, update: {} })),
-  );
-  const tech = async (...slugs: string[]) => (await prisma.technology.findMany({ where: { slug: { in: slugs } } })).map((t) => ({ technologyId: t.id }));
-
-  const sampleNote = '<p><em>This is sample content for demonstration purposes only. It does not describe a real client project.</em></p>';
-  const projects = [
-    {
-      title: 'Sample: Clinic Appointment Platform',
-      slug: 'sample-clinic-appointment-platform',
-      summary: 'Demonstration case study: an online booking and patient management platform for a multi-doctor clinic.',
-      categoryId: categories[0]!.id,
-      technologies: await tech('nextjs', 'nestjs', 'postgresql'),
-      objectives: 'Let patients book appointments online and reduce phone-based scheduling.',
-      challenges: 'Coordinating doctor schedules, preventing double bookings and sending reminders.',
-      solution: 'A web platform with real-time availability, SMS/email reminders and a staff dashboard.',
-      results: 'Sample content — no real-world results are claimed.',
-      isFeatured: true,
-    },
-    {
-      title: 'Sample: Trekking Guide Mobile App',
-      slug: 'sample-trekking-guide-mobile-app',
-      summary: 'Demonstration case study: an offline-first mobile guide for trekking routes around Pokhara.',
-      categoryId: categories[1]!.id,
-      technologies: await tech('flutter', 'nodejs'),
-      objectives: 'Provide route maps and safety information without mobile coverage.',
-      challenges: 'Offline maps, battery efficiency and multilingual content.',
-      solution: 'A cross-platform app with downloadable map packs and a lightweight content API.',
-      results: 'Sample content — no real-world results are claimed.',
-      isFeatured: true,
-    },
-    {
-      title: 'Sample: Cooperative Management System',
-      slug: 'sample-cooperative-management-system',
-      summary: 'Demonstration case study: a member, savings and loan management system for a cooperative.',
-      categoryId: categories[2]!.id,
-      technologies: await tech('react', 'nestjs', 'postgresql', 'docker'),
-      objectives: 'Replace spreadsheets with a secure, auditable system.',
-      challenges: 'Accurate interest calculations, role-based access and data migration.',
-      solution: 'A modular web application with audit trails, reports and automated backups.',
-      results: 'Sample content — no real-world results are claimed.',
-      isFeatured: true,
-    },
-  ];
-  for (const [i, p] of projects.entries()) {
-    const { technologies, ...data } = p;
-    await prisma.project.upsert({
-      where: { slug: p.slug },
-      create: { ...data, ...published, isSample: true, displayOrder: i, caseStudy: `${sampleNote}<p>${p.summary}</p>`, technologies: { create: technologies } },
-      update: {},
-    });
-  }
-  log('demo: 3 sample projects (labelled “Sample”)');
-
-  const author = await prisma.author.upsert({
-    where: { slug: 'asva-team' },
-    create: { name: 'Asva Innovation Lab Team', slug: 'asva-team', title: 'Engineering team', bio: 'Articles written by the team at Asva Innovation Lab.' },
-    update: {},
-  });
-  const blogCategory = await prisma.blogCategory.upsert({ where: { slug: 'engineering' }, create: { name: 'Engineering', slug: 'engineering' }, update: {} });
-  const designCategory = await prisma.blogCategory.upsert({ where: { slug: 'product-and-design' }, create: { name: 'Product & Design', slug: 'product-and-design' }, update: {} });
-  const tags = await Promise.all(
-    ['Web development', 'Mobile', 'Best practices'].map((name) => {
-      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      return prisma.blogTag.upsert({ where: { slug }, create: { name, slug }, update: {} });
-    }),
-  );
-  const posts = [
-    { title: 'Sample article: Planning a successful software project', slug: 'sample-planning-a-successful-software-project', categoryId: blogCategory.id, tagIds: [tags[2]!.id], days: 3 },
-    { title: 'Sample article: Choosing between a website and a web application', slug: 'sample-website-vs-web-application', categoryId: blogCategory.id, tagIds: [tags[0]!.id], days: 10 },
-    { title: 'Sample article: Designing for users in Nepal', slug: 'sample-designing-for-users-in-nepal', categoryId: designCategory.id, tagIds: [tags[1]!.id, tags[2]!.id], days: 20 },
-  ];
-  for (const p of posts) {
-    const content = `${sampleNote}<p>This placeholder article demonstrates the blog layout, typography and related-post features. Replace it with a real article from the admin panel.</p><h2>Why it matters</h2><p>Clear goals, early user feedback and an iterative delivery plan are the foundations of any successful digital product.</p><ul><li>Define what success looks like</li><li>Validate assumptions early</li><li>Ship in small, regular increments</li></ul>`;
-    await prisma.blogPost.upsert({
-      where: { slug: p.slug },
-      create: {
-        title: p.title,
-        slug: p.slug,
-        excerpt: 'Placeholder article used to demonstrate the blog. Replace it with real content.',
-        content,
-        readingTimeMinutes: estimateReadingTime(content),
-        status: ContentStatus.PUBLISHED,
-        publishedAt: new Date(now.getTime() - p.days * 86_400_000),
-        categoryId: p.categoryId,
-        authorId: author.id,
-        tags: { create: p.tagIds.map((tagId) => ({ tagId })) },
-      },
-      update: {},
-    });
-  }
-  log('demo: 3 sample blog posts');
 
   await prisma.job.upsert({
     where: { slug: 'sample-frontend-developer' },

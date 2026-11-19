@@ -30,8 +30,8 @@ describe('Role-based access control', () => {
     ['/api/v1/admin/applications', 'hr', 200],
     ['/api/v1/admin/applications', 'sales', 403],
     ['/api/v1/admin/applications', 'editor', 403],
-    ['/api/v1/admin/blog', 'editor', 200],
-    ['/api/v1/admin/blog', 'sales', 403],
+    ['/api/v1/admin/pages', 'editor', 200],
+    ['/api/v1/admin/pages', 'sales', 403],
     ['/api/v1/admin/settings', 'admin', 200],
     ['/api/v1/admin/settings', 'editor', 403],
     ['/api/v1/admin/users', 'admin', 200],
@@ -48,7 +48,7 @@ describe('Role-based access control', () => {
   });
 
   it('rejects every admin endpoint without a session', async () => {
-    for (const url of ['/api/v1/admin/inquiries', '/api/v1/admin/settings', '/api/v1/admin/users', '/api/v1/admin/blog', '/api/v1/admin/media']) {
+    for (const url of ['/api/v1/admin/inquiries', '/api/v1/admin/settings', '/api/v1/admin/users', '/api/v1/admin/pages', '/api/v1/admin/media']) {
       const res = await request(app.getHttpServer()).get(url).expect(401);
       expect(res.body.error.code).toBe('UNAUTHENTICATED');
     }

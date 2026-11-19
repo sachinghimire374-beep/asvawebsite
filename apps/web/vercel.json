@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "if [ -f ./package-lock.json ]; then npm install; else cd ../.. && npm install; fi",
+  "buildCommand": "if [ -f ./apps/web/package.json ]; then npm run build:shared && npm run build -w @asva/web; else cd ../.. && npm run build:shared && npm run build -w @asva/web; fi",
+  "outputDirectory": ".next"
+}

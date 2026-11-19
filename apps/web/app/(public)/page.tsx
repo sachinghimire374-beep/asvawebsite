@@ -48,7 +48,7 @@ export default async function HomePage() {
                 <Link href={home.hero.primaryCta.href}>{home.hero.primaryCta.label}</Link>
               </Button>
               <Button asChild size="lg" variant="outline-dark">
-                <Link href="/portfolio">Explore our work</Link>
+                <Link href="/services">Explore our services</Link>
               </Button>
             </div>
           </div>

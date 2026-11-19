@@ -62,7 +62,7 @@ export const DEFAULT_SETTINGS: SettingsValues = {
       subheadline:
         'From business applications to custom digital products, we help organizations solve real problems through thoughtful design and reliable engineering.',
       primaryCta: { label: 'Discuss a project', href: '/start-a-project' },
-      secondaryCta: { label: 'Our work', href: '/portfolio' },
+      secondaryCta: { label: 'Our services', href: '/services' },
       imageId: null,
     },
     intro: {
@@ -104,11 +104,6 @@ export const DEFAULT_SETTINGS: SettingsValues = {
         { title: 'Maintenance & Continuous Improvement', description: 'Support and enhancements based on real usage.' },
       ],
     },
-    projects: {
-      enabled: true,
-      heading: 'Selected work',
-      subheading: 'Products and platforms we have designed and engineered.',
-    },
     technologies: {
       enabled: true,
       heading: 'Technology',
@@ -122,11 +117,6 @@ export const DEFAULT_SETTINGS: SettingsValues = {
       heading: 'Have a project in mind? Let’s talk.',
       body: 'Tell us about the problem you are trying to solve. We will reply within two business days.',
       button: { label: 'Discuss a project', href: '/start-a-project' },
-    },
-    insights: {
-      enabled: true,
-      heading: 'Insights',
-      subheading: 'Notes on software engineering and technology for growing businesses.',
     },
   },
   about: {

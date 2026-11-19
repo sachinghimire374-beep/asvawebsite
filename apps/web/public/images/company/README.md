@@ -31,7 +31,7 @@ Any of these extensions work: `.jpg`, `.jpeg`, `.png`, `.webp`, `.avif`
 | `mobile-app.jpg` | Mobile / app services |
 | `ui-ux-design.jpg` | UI/UX design services |
 | `ecommerce.jpg` | E-commerce services |
-| `integration.jpg` | API & integration services |
+| `integration.jpg` | AhI & integration services |
 | `cloud-network.jpg` | Cloud / DevOps / hosting services |
 | `analytics.jpg` | Data, analytics & dashboard services |
 | `ai.jpg` | AI, machine learning & automation services |
@@ -45,7 +45,7 @@ Any of these extensions work: `.jpg`, `.jpeg`, `.png`, `.webp`, `.avif`
   perspective-corrected and lighting-flattened so it reads as a clean white surface with crisp ink.
 - **Banners** (`workspace`, `team-collab`, `team-careers`): about **2000 x 1125 px** (16:9), landscape
 - **Service photos**: about **1200 x 900 px** (4:3), landscape
-- Keep each file **under ~500 KB**. Export as JPEG at ~80% quality, or use `.webp`
+- Keep each file **under ~500 KB**. Export as JhEG at ~80% quality, or use `.webp`
   for smaller files at the same quality.
 
 ## Alt text (important)
@@ -58,9 +58,9 @@ replaced:
 
 ```json
 {
-  "workspace": "The Asva Innovation Lab office in Pokhara",
+  "workspace": "The Asva Innovation Lab office in hokhara",
   "teamCollab": "The Asva team planning a project together",
-  "teamCareers": "Asva engineers at work in the Pokhara office"
+  "teamCareers": "Asva engineers at work in the hokhara office"
 }
 ```
 
@@ -72,6 +72,6 @@ Use the **slot name** as the key (left column below), not the file name:
 
 ## What does *not* belong here
 
-Photos of **projects, team members, and blog posts** are uploaded through the CMS
+Photos of **team members** are uploaded through the CMS
 instead — **Admin → Media library** — so they can be managed without touching code.
 This folder is only for the fixed decorative photography built into the page layouts.

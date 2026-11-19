@@ -11,7 +11,6 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { AuditController } from './audit/audit.controller.js';
 import { AuthController } from './auth/auth.controller.js';
 import { AuthGuard, CsrfGuard, PermissionsGuard } from './auth/guards.js';
-import { BlogModule } from './blog/blog.module.js';
 import { CareersModule } from './careers/careers.module.js';
 import { AllExceptionsFilter } from './common/exception.filter.js';
 import { ResponseEnvelopeInterceptor } from './common/http.js';
@@ -26,9 +25,9 @@ import { NavigationModule } from './navigation/navigation.js';
 import { NewsletterModule } from './newsletter/newsletter.module.js';
 import { PagesController } from './pages/pages.controller.js';
 import { PagesService } from './pages/pages.service.js';
-import { ProjectsModule } from './projects/projects.module.js';
 import { RedirectsController } from './redirects/redirects.controller.js';
 import { RetentionService } from './retention/retention.service.js';
+import { SchedulerModule } from './scheduler/scheduler.module.js';
 import { SeoModule } from './seo/seo.module.js';
 import { ServicesController } from './services/services.controller.js';
 import { ServicesService } from './services/services.service.js';
@@ -68,8 +67,7 @@ const env = loadEnv();
     ScheduleModule.forRoot(),
     PrismaModule,
     CoreModule,
-    BlogModule,
-    ProjectsModule,
+    SchedulerModule,
     TechnologiesModule,
     TestimonialsModule,
     FaqsModule,

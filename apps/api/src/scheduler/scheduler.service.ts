@@ -24,18 +24,14 @@ export class SchedulerService {
   async publishDue(now = new Date()): Promise<number> {
     const result = await withAdvisoryLock(this.prisma, LOCKS.PUBLISH_SCHEDULED, async (tx) => {
       const due = { status: ContentStatus.SCHEDULED, publishedAt: { lte: now } };
-      const [posts, pages, services, projects] = await Promise.all([
-        tx.blogPost.findMany({ where: due, select: { id: true, slug: true } }),
+      const [pages, services] = await Promise.all([
         tx.page.findMany({ where: due, select: { id: true, slug: true } }),
         tx.service.findMany({ where: due, select: { id: true, slug: true } }),
-        tx.project.findMany({ where: due, select: { id: true, slug: true } }),
       ]);
       const publish = (ids: string[]) => ({ where: { id: { in: ids }, status: ContentStatus.SCHEDULED }, data: { status: ContentStatus.PUBLISHED } });
       const groups: [string, string, CacheTag, { id: string; slug: string }[], (ids: string[]) => Promise<unknown>][] = [
-        ['blog_post', 'BlogPost', 'blog', posts, (ids) => tx.blogPost.updateMany(publish(ids))],
         ['page', 'Page', 'pages', pages, (ids) => tx.page.updateMany(publish(ids))],
         ['service', 'Service', 'services', services, (ids) => tx.service.updateMany(publish(ids))],
-        ['project', 'Project', 'projects', projects, (ids) => tx.project.updateMany(publish(ids))],
       ];
       const tags: CacheTag[] = [];
       let count = 0;

@@ -66,7 +66,6 @@ export function websiteJsonLd(settings: PublicSettings) {
     '@type': 'WebSite',
     name: settings.general.shortName,
     url: absoluteUrl('/'),
-    potentialAction: { '@type': 'SearchAction', target: `${absoluteUrl('/blog')}?q={search_term_string}`, 'query-input': 'required name=search_term_string' },
   };
 }
 

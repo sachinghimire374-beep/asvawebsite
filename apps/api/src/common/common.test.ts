@@ -60,10 +60,10 @@ describe('PermissionsGuard', () => {
     return new PermissionsGuard(reflector);
   };
   it('allows users holding every required permission', () => {
-    expect(guardWith(['blog.manage']).canActivate(ctx(['blog.manage', 'media.manage']))).toBe(true);
+    expect(guardWith(['pages.manage']).canActivate(ctx(['pages.manage', 'media.manage']))).toBe(true);
   });
   it('denies users missing a permission', () => {
-    expect(() => guardWith(['settings.manage']).canActivate(ctx(['blog.manage']))).toThrow(ForbiddenException);
+    expect(() => guardWith(['settings.manage']).canActivate(ctx(['pages.manage']))).toThrow(ForbiddenException);
   });
 });
 
