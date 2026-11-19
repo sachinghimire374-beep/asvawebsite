@@ -41,6 +41,9 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@asva/shared'],
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Trimmed from Next's default (which goes up to 2560/3840) to limit concurrent sharp
+    // memory use on a memory-constrained host; 1920 still covers full-HD full-bleed images.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     localPatterns: [{ pathname: '/api/v1/media/files/**', search: '' }, { pathname: '/brand/**', search: '' }, { pathname: '/images/**', search: '' }],
     remotePatterns: mediaHost ? [{ protocol: mediaHost.protocol.replace(':', '') as 'https' | 'http', hostname: mediaHost.hostname, pathname: `${mediaHost.pathname.replace(/\/$/, '')}/**` }] : [],
   },
