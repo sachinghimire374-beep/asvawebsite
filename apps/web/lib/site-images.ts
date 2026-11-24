@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from 'node:fs';
-import path from 'node:path';
+import manifest from './company-images.generated.json';
+import altJson from '../public/images/company/alt.json';
 
 /**
  * Photography used in the fixed page layouts.
@@ -8,23 +8,17 @@ import path from 'node:path';
  * Unsplash License). The company's own photos go in `public/images/company` and
  * override a stock photo of the same base name — see the README in that folder.
  *
- * Resolved once at server start, so a newly added photo needs a dev-server restart.
- * Server-side only: these components never ship to the browser.
+ * The company folder listing is generated at build time (scripts/gen-company-images.mjs) because
+ * Cloudflare Workers have no filesystem. Re-run it (or any build) after adding a photo.
  */
-const COMPANY_DIR = path.join(process.cwd(), 'public', 'images', 'company');
+const COMPANY_FILES = new Set<string>(manifest.files);
 const EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
 
 /** Optional `public/images/company/alt.json` — alt text for replaced photos, keyed by slot name. */
 function readAltOverrides(): Record<string, string> {
-  try {
-    const file = path.join(COMPANY_DIR, 'alt.json');
-    if (!existsSync(file)) return {};
-    const parsed: unknown = JSON.parse(readFileSync(file, 'utf8'));
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
-    return Object.fromEntries(Object.entries(parsed as Record<string, unknown>).filter((e): e is [string, string] => typeof e[1] === 'string' && e[1].trim() !== ''));
-  } catch {
-    return {};
-  }
+  const parsed: unknown = altJson;
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+  return Object.fromEntries(Object.entries(parsed as Record<string, unknown>).filter((e): e is [string, string] => typeof e[1] === 'string' && e[1].trim() !== ''));
 }
 
 const ALT_OVERRIDES = readAltOverrides();
@@ -45,16 +39,12 @@ function photo(slot: string, file: string, alt: string, stockFile = file, compan
   const base = file.replace(/\.[^.]+$/, '');
   let src = `/images/${stockFile}`;
   let isCompanyPhoto = false;
-  try {
-    for (const ext of EXTENSIONS) {
-      if (existsSync(path.join(COMPANY_DIR, `${base}${ext}`))) {
-        src = `/images/company/${base}${ext}`;
-        isCompanyPhoto = true;
-        break;
-      }
+  for (const ext of EXTENSIONS) {
+    if (COMPANY_FILES.has(`${base}${ext}`)) {
+      src = `/images/company/${base}${ext}`;
+      isCompanyPhoto = true;
+      break;
     }
-  } catch {
-    // Unreadable folder: keep the stock photo.
   }
   return {
     src,

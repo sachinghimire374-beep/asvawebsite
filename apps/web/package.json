@@ -4,14 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --port 3000",
-    "build": "next build",
+    "dev": "node scripts/gen-company-images.mjs && next dev --port 3000",
+    "build": "node scripts/gen-company-images.mjs && next build",
     "start": "next start --port 3000",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "cf:build": "opennextjs-cloudflare build",
+    "cf:build": "node scripts/gen-company-images.mjs && API_INTERNAL_URL=https://api.asva.com.np NEXT_PUBLIC_SITE_URL=https://asva.com.np opennextjs-cloudflare build",
     "cf:deploy": "opennextjs-cloudflare deploy",
     "cf:preview": "opennextjs-cloudflare preview"
   },
