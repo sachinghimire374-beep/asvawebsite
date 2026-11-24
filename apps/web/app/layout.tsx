@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import { absoluteUrl } from '@/lib/utils';
 import './globals.css';
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swap' });
-const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', display: 'swap' });
+// Self-hosted (Latin subset) so builds do not need to reach Google Fonts.
+const geist = localFont({ src: './fonts/geist-latin.woff2', weight: '100 900', variable: '--font-geist', display: 'swap' });
+const geistMono = localFont({ src: './fonts/geist-mono-latin.woff2', weight: '100 900', variable: '--font-geist-mono', display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl('/')),

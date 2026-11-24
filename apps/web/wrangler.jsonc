@@ -10,7 +10,7 @@
   },
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://asva.com.np",
-    "API_INTERNAL_URL": "https://asva-api-67cq.onrender.com",
+    "API_INTERNAL_URL": "https://api.asva.com.np",
     "REVALIDATE_SECONDS": "300"
   },
   "observability": {
